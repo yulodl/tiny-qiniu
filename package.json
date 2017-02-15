@@ -1,0 +1,33 @@
+{
+  "name": "tiny-qiniu",
+  "version": "1.0.0",
+  "description": "compress image online with 'tinypng.com' api, then upload to 'qiniu.com'",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel src -d dist",
+    "work": "babel src -d dist && node dist/tinyQn.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yulodl/tiny-qiniu.git"
+  },
+  "keywords": [
+    "compress",
+    "tinypng",
+    "qiniu"
+  ],
+  "author": "yulodl",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yulodl/tiny-qiniu/issues"
+  },
+  "homepage": "https://github.com/yulodl/tiny-qiniu#readme",
+  "dependencies": {
+    "qiniu": "^6.1.13",
+    "tinify": "^1.4.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-preset-env": "^1.1.8"
+  }
+}

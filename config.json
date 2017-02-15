@@ -1,0 +1,6 @@
+{
+  "key": "tinyjpg key",
+  "bucket": "qiniu bucket",
+  "ACCESS_KEY": "qiniu access key",
+  "SECRET_KEY": "qiniu secret key"
+}
