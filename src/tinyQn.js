@@ -26,7 +26,6 @@ fs.readdir(imgPrePath, (err, imgs) => {
     if (imgExtReg.test(img)) {
       const source = tinify.fromFile(imgPath);
       source.result().data().then((body) => {
-        console.log(body);
         fs.writeFile(handledImgPath, body, (err) => {
           if (err) console.error(err);
           handleImg(img, handledImgPath);
