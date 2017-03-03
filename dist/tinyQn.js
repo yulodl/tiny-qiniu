@@ -44,10 +44,9 @@ _fs2.default.readdir(imgPrePath, function (err, imgs) {
     if (imgExtReg.test(img)) {
       var source = _tinify2.default.fromFile(imgPath);
       source.result().data().then(function (body) {
-        console.log(body);
         _fs2.default.writeFile(handledImgPath, body, function (err) {
           if (err) console.error(err);
-          handleImg(img, handledImgPath);
+          handleImg(_path2.default.join(process.env.QNPATH || '', img), handledImgPath);
         });
       }).catch(function (err) {
         return console.error(err);
@@ -86,7 +85,7 @@ function upload(key, localFile) {
   _qiniu2.default.io.putFile(token, key, localFile, extra, function (err, ret) {
     if (!err) {
       // 上传成功， 处理返回值
-      console.log('uploaded: ', ret.hash, ret.key, ret.persistentId);
+      console.log('uploaded: ', ret.hash, ret.key);
     } else {
       // 上传失败， 处理返回代码
       console.log('upload failed:', err);

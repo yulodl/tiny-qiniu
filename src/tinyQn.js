@@ -28,7 +28,7 @@ fs.readdir(imgPrePath, (err, imgs) => {
       source.result().data().then((body) => {
         fs.writeFile(handledImgPath, body, (err) => {
           if (err) console.error(err);
-          handleImg(img, handledImgPath);
+          handleImg(path.join(process.env.QNPATH||'', img), handledImgPath);
         });
       }).catch((err) => console.error(err));
     } else {
