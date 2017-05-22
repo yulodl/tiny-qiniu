@@ -56,65 +56,11 @@ function upload(key, localFile) {
 },{"qiniu":undefined}],2:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _fs = require('fs');
-
-var _fs2 = _interopRequireDefault(_fs);
-
-var _path = require('path');
-
-var _path2 = _interopRequireDefault(_path);
-
-var _tinify = require('tinify');
-
-var _tinify2 = _interopRequireDefault(_tinify);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_tinify2.default.key = 'giHf9FmlbH-LRsLGQysdxO5KoDVlUukX';
-var imgPrePath = './imgPre';
-var imgHandledPath = './imgHandled';
-var imgExtReg = /\.(?:png|jpe?g)$/i;
-
-exports.default = function (cb) {
-  _fs2.default.readdir(imgPrePath, function (err, imgs) {
-    if (err) console.error(err);
-    console.log(imgs);
-    imgs.forEach(function (img, i) {
-      var imgPath = _path2.default.join(imgPrePath, img);
-      var handledImgPath = _path2.default.join(imgHandledPath, img);
-      if (imgExtReg.test(img)) {
-        var source = _tinify2.default.fromFile(imgPath);
-        source.result().data().then(function (body) {
-          _fs2.default.writeFile(handledImgPath, body, function (err) {
-            if (err) console.error(err);
-            cb && cb(img, handledImgPath);
-          });
-        }).catch(function (err) {
-          return console.error(err);
-        });
-      } else {
-        console.log(imgPath, ' illegal image extension!!!');
-      }
-    });
-  });
-};
-
-},{"fs":undefined,"path":undefined,"tinify":undefined}],3:[function(require,module,exports){
-'use strict';
-
 var _yuxd = require('../yuxd.json');
 
 var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
-
-var _tinyImg = require('./tinyImg.js');
-
-var _tinyImg2 = _interopRequireDefault(_tinyImg);
 
 var _qn = require('./qn.js');
 
@@ -122,15 +68,21 @@ var _qn2 = _interopRequireDefault(_qn);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-(0, _tinyImg2.default)(function (img, handledImgPath) {
-  (0, _qn2.default)(_path2.default.join(process.env.QNPATH || '', img), handledImgPath, _yuxd.ACCESS_KEY, _yuxd.SECRET_KEY, _yuxd.bucket);
+if (process.argv.length < 3) {
+  console.error('upload files please');
+  process.exit(1);
+}
+var localFiles = process.argv.slice(2);
+
+localFiles.forEach(function (lf, i) {
+  (0, _qn2.default)(_path2.default.join(process.env.QNPATH || '', _path2.default.basename(lf)), lf, _yuxd.ACCESS_KEY, _yuxd.SECRET_KEY, _yuxd.bucket);
 });
 
-},{"../yuxd.json":4,"./qn.js":1,"./tinyImg.js":2,"path":undefined}],4:[function(require,module,exports){
+},{"../yuxd.json":3,"./qn.js":1,"path":undefined}],3:[function(require,module,exports){
 module.exports={
   "bucket": "yulodl",
   "ACCESS_KEY": "JzngRcsxxcstDlWyha5wNFjRMb2GJDa5lqTFEthf",
   "SECRET_KEY": "M8TzqreioC1IwyCSACi5MZnAmzATYA1hlYwYXFDc"
 }
 
-},{}]},{},[3]);
+},{}]},{},[2]);

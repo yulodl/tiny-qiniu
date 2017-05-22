@@ -6,6 +6,7 @@
   "scripts": {
     "bundle-ywxx": "browserify src/ywxx-img.js --node --no-bundle-external -t babelify -o dist/ywxx-img.js",
     "bundle-yuxd": "browserify src/yuxd-img.js --node --no-bundle-external -t babelify -o dist/yuxd-img.js",
+    "yuxd-replace": "browserify src/yuxd-replace.js --node --no-bundle-external -t babelify -o dist/yuxd-replace.js",
     "work": "node dist/tinyQn.js"
   },
   "repository": {
