@@ -1,44 +1,17 @@
-import fs from 'fs';
-import path from 'path';
-import config from '../config.json';
-
-import tinify from 'tinify';
-tinify.key = config.key;
-
 import qiniu from 'qiniu';
-qiniu.conf.ACCESS_KEY = config.ACCESS_KEY;
-qiniu.conf.SECRET_KEY = config.SECRET_KEY;
-
 //构建bucketmanager对象
-const client = new qiniu.rs.Client();
+let client = null;
 //要上传的空间
-const bucket = config.bucket;
-
-const imgPrePath = './imgPre';
-const imgHandledPath = './imgHandled';
-const imgExtReg = /\.(?:png|jpe?g)$/i;
-fs.readdir(imgPrePath, (err, imgs) => {
-  if (err) console.error(err);
-  console.log(imgs);
-  imgs.forEach((img, i) => {
-    const imgPath = path.join(imgPrePath, img);
-    const handledImgPath = path.join(imgHandledPath, img);
-    if (imgExtReg.test(img)) {
-      const source = tinify.fromFile(imgPath);
-      source.result().data().then((body) => {
-        fs.writeFile(handledImgPath, body, (err) => {
-          if (err) console.error(err);
-          handleImg(path.join(process.env.QNPATH||'', img), handledImgPath);
-        });
-      }).catch((err) => console.error(err));
-    } else {
-      console.log(imgPath, ' illegal image extension!!!');
-    }
-  });
-});
+let bucket = null;
 
 //获取文件信息
-const handleImg = (key, localFile) => {
+export default (key, localFile, accessKey, secretKey, bkt) => {
+  if (qiniu.conf.ACCESS_KEY != accessKey || qiniu.conf.SECRET_KEY != secretKey) {
+    qiniu.conf.ACCESS_KEY = accessKey;
+    qiniu.conf.SECRET_KEY = secretKey;
+    client = new qiniu.rs.Client();
+  }
+  bucket = bkt;
   client.stat(bucket, key, (err, ret) => {
     if (!err) {
       console.log('already exist, upload after remove!');
@@ -60,9 +33,9 @@ const handleImg = (key, localFile) => {
 
 function upload(key, localFile) {
   //生成上传 Token
-  const token = uptoken(bucket, key);
+  const token = new qiniu.rs.PutPolicy(bucket+":"+key).token();
   const extra = new qiniu.io.PutExtra();
-  qiniu.io.putFile(token, key, localFile, extra, function(err, ret) {
+  qiniu.io.putFile(token, key, localFile, extra, (err, ret) => {
     if(!err) {
       // 上传成功， 处理返回值
       console.log('uploaded: ', ret.hash, ret.key);
@@ -73,6 +46,7 @@ function upload(key, localFile) {
   });
 }
 
+  /*
 //构建上传策略函数，设置回调的url以及需要回调给业务服务器的数据
 function uptoken(bucket, key) {
   var putPolicy = new qiniu.rs.PutPolicy(bucket+":"+key);
@@ -80,3 +54,4 @@ function uptoken(bucket, key) {
   //putPolicy.callbackBody = 'filename=$(fname)&filesize=$(fsize)';
   return putPolicy.token();
 }
+*/
